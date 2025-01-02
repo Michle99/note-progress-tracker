@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "note-progress-tracker",
+	"name": "Note Progess Tracker",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Track your note-taking progress with badges, streaks, and milestones.",
+	"author": "Michle99",
+	"authorUrl": "https://github.com/Michle99",
+	"fundingUrl": "https://www.buymeacoffee.com/michle99",
 	"isDesktopOnly": false
 }
