@@ -1,4 +1,4 @@
-# Obsidian Sample Plugin
+# Note Progress Tracker
 
 This is a sample plugin for Obsidian (https://obsidian.md).
 
