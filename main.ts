@@ -8,16 +8,16 @@ import {
 
 interface NoteProgressSettings {
 	streakCount: number;
-	milestoneCount: number;
 	badgeCount: number;
-	lastNoteDate: string; // The date the last note was taken.
+	milestones: number;
+	lastNoteDate: string;
 }
 
 const DEFAULT_SETTINGS: NoteProgressSettings = {
 	streakCount: 0,
-	milestoneCount: 0,
 	badgeCount: 0,
-	lastNoteDate: "",
+	milestones: 0,
+	lastNoteDate: '',
 };
 
 export default class NoteProgressTrackerPlugin extends Plugin {
@@ -25,7 +25,7 @@ export default class NoteProgressTrackerPlugin extends Plugin {
 
 	async onload() {
 		console.log('Note Progress Tracker plugin loaded');
-		this.settings = Object.assign({}, DEFAULT_SETTINGS);
+		this.settings = { ...DEFAULT_SETTINGS };
 
 		await this.loadSettings();
 
@@ -36,7 +36,6 @@ export default class NoteProgressTrackerPlugin extends Plugin {
 			const currentDate = new Date().toISOString().split('T')[0];
 			const lastNoteDate = this.settings.lastNoteDate;
 
-			// Check if note was taken on the current day to update streak
 			if (lastNoteDate !== currentDate) {
 			this.updateStreak();
 			this.settings.lastNoteDate = currentDate;
@@ -49,7 +48,7 @@ export default class NoteProgressTrackerPlugin extends Plugin {
 
 		this.addSettingTab(new NoteProgressSettingsTab(this.app, this));
 	}
-
+  
 	async updateStreak() {
 		const currentDate = new Date().toISOString().split('T')[0];
 		const lastNoteDate = this.settings.lastNoteDate;
@@ -72,34 +71,36 @@ export default class NoteProgressTrackerPlugin extends Plugin {
 
 	checkMilestonesAndBadges() {
 		if (this.settings.streakCount === 7) {
-		this.settings.badgeCount++; // Award a "1 week streak" badge.
-		new Notice('Congratulations! You earned the 1 Week Streak Badge!');
+		this.settings.badgeCount++;
+		new Notice('🥳 You earned the 1 Week Streak Badge!');
 		}
 
 		if (this.settings.streakCount === 30) {
-		this.settings.badgeCount++; // Award a "1 month streak" badge.
-		new Notice('Congratulations! You earned the 1 Month Streak Badge!');
+		this.settings.badgeCount++;
+		new Notice('🎉 You earned the 1 Month Streak Badge!');
 		}
 	}
 
 	showMilestonesAndBadges() {
-		new Notice(`Current Streak: ${this.settings.streakCount} days.`);
-		new Notice(`Total Badges: ${this.settings.badgeCount}`);
-		new Notice(`Milestones Completed: ${this.settings.milestoneCount}`);
-	}
+		const streakMessage = `🔥 Streak: ${this.settings.streakCount} days`;
+		const badgesMessage = `🏅 Badges: ${this.settings.badgeCount}`;
+		const milestonesMessage = `🎯 Milestones: ${this.settings.milestones}`;
 
+		new Notice(`${streakMessage}\n${badgesMessage}\n${milestonesMessage}`);
+	}
+  
 	async loadSettings() {
 		const data = await this.loadData();
 		if (data) {
 		this.settings = { ...DEFAULT_SETTINGS, ...data };
 		}
 	}
-
+  
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
-}
-
+  }
+  
   class NoteProgressSettingsTab extends PluginSettingTab {
 	plugin: NoteProgressTrackerPlugin;
   
@@ -107,16 +108,16 @@ export default class NoteProgressTrackerPlugin extends Plugin {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
-
+  
 	display(): void {
 		const { containerEl } = this;
 
 		containerEl.empty();
-		containerEl.createEl('h2', { text: 'Note Progress Tracker Settings' });
+		containerEl.createEl('h2', { text: '🎯 Note Progress Tracker Settings' });
 
 		new Setting(containerEl)
-		.setName('Streak Count')
-		.setDesc('The number of consecutive days you have taken notes.')
+		.setName('Current Streak')
+		.setDesc('Your consecutive days of note-taking.')
 		.addText((text) => text.setValue(String(this.plugin.settings.streakCount)).onChange(async (value) => {
 			this.plugin.settings.streakCount = parseInt(value);
 			await this.plugin.saveSettings();
@@ -130,4 +131,5 @@ export default class NoteProgressTrackerPlugin extends Plugin {
 			await this.plugin.saveSettings();
 		}));
 	}
-}
+  }
+  
